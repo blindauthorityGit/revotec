@@ -1,7 +1,7 @@
 // pages/leistungen.jsx
 import Head from "next/head";
 import Image from "next/image";
-import SubPageHero from "@/sections/SubpageHero";
+import SubPageHero from "@/sections/subPageHero";
 import ServiceHighlights from "@/sections/textImg/serviceSection";
 import CTASection from "@/sections/CTASection";
 import ReferenzenOverview from "@/sections/referenzen/referenzenOverview";

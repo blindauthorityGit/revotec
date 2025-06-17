@@ -1,7 +1,7 @@
 // pages/leistungen.jsx
 import Head from "next/head";
 import Image from "next/image";
-import SubPageHero from "@/sections/SubpageHero";
+import SubPageHero from "@/sections/subPageHero";
 import ServiceHighlights from "@/sections/textImg/serviceSection";
 import CTASection from "@/sections/CTASection";
 import ReferenzDetail from "@/sections/referenzen/referenceDetail";
@@ -11,7 +11,7 @@ import ContactOverview from "@/sections/contactOverview";
 import Card1 from "@/assets/card1.png";
 import Card2 from "@/assets/card2.png";
 import Card3 from "@/assets/card3.png";
-import HeroReferenzen from "@/assets/HeroReferenzen.png";
+import HeroReferenzen from "@/assets/heroReferenzen.png";
 import references from "@/data/referenzen";
 
 export default function Referenzen({ reference }) {

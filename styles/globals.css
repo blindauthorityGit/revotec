@@ -1,6 +1,44 @@
+@import "tailwindcss";
+
+@theme {
+  --font-headline: "antonio", "sans-serif";
+  --font-body: "inter", "sans-serif";
+  --breakpoint-3xl: 1920px;
+  --color-avocado-100: oklch(0.99 0 0);
+  --color-avocado-200: oklch(0.98 0.04 113.22);
+  --color-avocado-300: oklch(0.94 0.11 115.03);
+  --color-avocado-400: oklch(0.92 0.19 114.08);
+  --color-avocado-500: oklch(0.84 0.18 117.33);
+  --color-avocado-600: oklch(0.53 0.12 118.34);
+  --ease-fluid: cubic-bezier(0.3, 0, 0, 1);
+  --ease-snappy: cubic-bezier(0.2, 0, 0, 1);
+  --color-background-dark: oklch(0.269 0.0018 286.28);
+  --color-flush-orange-50: #fff8ed;
+--color-primaryColor-100: #feefd6;
+--color-primaryColor-200: #fcdbac;
+--color-primaryColor-300: #fac177;
+--color-primaryColor-400: #f79c40;
+--color-primaryColor-500: #f5821f;
+--color-primaryColor-600: #e66410;
+--color-primaryColor-700: #bf4b0f;
+--color-primaryColor-800: #973c15;
+--color-primaryColor-900: #7a3314;
+--color-primaryColor-950: #421808;
+
+
+  /* ... */
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -9,34 +47,8 @@
     --foreground: #ededed;
   }
 }
-
-html,
 body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  color: var(--foreground);
   background: var(--background);
+  color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
 }

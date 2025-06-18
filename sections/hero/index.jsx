@@ -41,12 +41,12 @@ export default function Hero({
             // style={{ backgroundColor: bgColor }}
         >
             {/* Radial gradient overlay */}
-            <div
+            {/* <div
                 className="absolute inset-0 pointer-events-none z-10"
                 style={{
                     background: `radial-gradient(circle at top left, ${gradientFrom}, ${gradientTo})`,
                 }}
-            />
+            /> */}
 
             {/* image */}
             {imageSrc && (

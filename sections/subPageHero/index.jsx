@@ -15,7 +15,7 @@ export default function SubpageHero({
     gradientTo = "transparent",
 }) {
     return (
-        <section className="relative bg-background-dark min-h-[60vh] py-20 lg:min-h-[300px] flex items-center justify-center  text-white overflow-hidden">
+        <section className="relative bg-background-dark min-h-[60vh] py-20 lg:min-h-[600px] flex items-center justify-center  text-white overflow-hidden">
             {/* Background Image or Gradient */}
             {bgImage && (
                 <div
@@ -28,12 +28,12 @@ export default function SubpageHero({
                 style={{ background: `linear-gradient(to right bottom, ${bgGradientFrom}, ${bgGradientTo})` }}
             />
 
-            <div
+            {/* <div
                 className="absolute inset-0 pointer-events-none z-10"
                 style={{
                     background: `radial-gradient(circle at top left, ${gradientFrom}, ${gradientTo})`,
                 }}
-            />
+            /> */}
 
             {/* Content */}
             <div className="relative z-10 container mx-auto px-6 md:px-12 space-y-6">

@@ -61,12 +61,12 @@ export default function ContactSection({ gradientFrom = "rgba(245,130,31,0.15)",
     return (
         <section className="relative font-body bg-background-dark text-white overflow-hidden py-20">
             {/* subtle gradient overlay */}
-            <div
+            {/* <div
                 className="absolute inset-0 pointer-events-none z-10"
                 style={{
                     background: `radial-gradient(circle at top left, ${gradientFrom}, ${gradientTo})`,
                 }}
-            />
+            /> */}
             <div className="relative container mx-auto py-16 lg:py-30 px-6 lg:px-12 grid grid-cols-12 lg:gap-12 items-start">
                 {/* Left Info */}
                 <div className="col-span-12 lg:col-span-5 space-y-6">

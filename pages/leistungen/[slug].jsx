@@ -3,7 +3,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { services } from "@/data/services";
-import SubPageHero from "@/sections/SubpageHero";
+import SubPageHero from "@/sections/subPageHero";
 import { H2, H3, H4, P } from "@/typography";
 import { CTAButton } from "@/components/buttons";
 import CTASection from "@/sections/CTASection";

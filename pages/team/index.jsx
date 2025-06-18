@@ -13,16 +13,39 @@ import Card1 from "@/assets/card1.png";
 import History from "@/assets/history.png";
 import HeroTeam from "@/assets/heroTeam.png";
 
+import Meta from "@/components/SEO";
+
+import Logo from "@/assets/logoLight.svg";
+
 export default function Team() {
+    const seoData = {
+        mainSEO: {
+            title: "Revotec GmbH – Technische Beratung, Projektmanagement & ESG-Transformation",
+            description:
+                "Revotec GmbH bietet fundierte technische Beratung, ganzheitliches Bauprojektmanagement und maßgeschneiderte ESG-Transformationskonzepte für zukunftssichere Immobilienprojekte.",
+            keywords: [
+                "Revotec",
+                "technische Beratung",
+                "Bauprojektmanagement",
+                "ESG Transformation",
+                "Immobilien",
+                "CAFM",
+                "SAP Integration",
+            ],
+        },
+        advancedSEO: {
+            // Für og:image verwenden wir hier das Hero‐Bild
+            // urlFor erwartet ein Sanity‐Objekt – wir lassen es null, damit dann das Logo greift
+            ogImage: null,
+            // Twitter‐Image (wird aus data.advancedSEO.description befüllt)
+            description: Logo.src,
+        },
+    };
+
     return (
         <>
-            <Head>
-                <title>Team – Revotec GmbH</title>
-                <meta
-                    name="description"
-                    content="Unsere Leistungen in technischer Beratung, Projektmanagement & ESG-Transformation"
-                />
-            </Head>
+            {/* SEO */}
+            <Meta data={seoData} />
 
             {/* Subpage-Hero */}
             <SubPageHero

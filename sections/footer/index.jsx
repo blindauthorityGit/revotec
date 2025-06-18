@@ -47,12 +47,12 @@ export default function Footer() {
                             </Link>
                         </li>
                         <li>
-                            <Link href="/uber-uns" className="hover:text-primaryColor-500">
+                            <Link href="/team" className="hover:text-primaryColor-500">
                                 Über uns
                             </Link>
                         </li>
                         <li>
-                            <Link href="/blog" className="hover:text-primaryColor-500">
+                            <Link href="/news" className="hover:text-primaryColor-500">
                                 News
                             </Link>
                         </li>

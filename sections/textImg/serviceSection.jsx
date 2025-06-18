@@ -80,7 +80,7 @@ export default function ServiceHighlights({ services = [] }) {
                                         ))}
                                     </ul>
 
-                                    <MainButton klasse="mt-auto w-full lg:w-full " link={svc.link}>
+                                    <MainButton klasse="mt-auto w-full lg:w-full " link={svc.buttonLink}>
                                         {svc.buttonText}
                                     </MainButton>
                                 </motion.div>

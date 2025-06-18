@@ -97,12 +97,12 @@ export default function ContactSection({ gradientFrom = "rgba(0, 0, 0, 0.7)", gr
                     </div>{" "}
                 </div>
 
-                <div
+                {/* <div
                     className="absolute inset-0 pointer-events-none z-10"
                     style={{
                         background: `radial-gradient(circle at top left, ${gradientFrom}, ${gradientTo})`,
                     }}
-                />
+                /> */}
 
                 {/* Form */}
                 <form onSubmit={handleSubmit} noValidate className="space-y-6">

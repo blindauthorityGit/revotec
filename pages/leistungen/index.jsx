@@ -34,7 +34,7 @@ export default function Leistungen() {
             ],
             imageSrc: Card1.src,
             buttonText: "Mehr erfahren",
-            buttonLink: "/leistungen/beratung",
+            buttonLink: "/leistungen/technische-beratung",
         },
         {
             title: "Bauprojektmanagement",
@@ -54,7 +54,7 @@ export default function Leistungen() {
             ],
             imageSrc: Card2.src,
             buttonText: "Mehr erfahren",
-            buttonLink: "/leistungen/projekt",
+            buttonLink: "/leistungen/bauprojektmanagement",
         },
         {
             title: "ESG-Transformation",
@@ -74,7 +74,7 @@ export default function Leistungen() {
             ],
             imageSrc: Card3.src,
             buttonText: "Mehr erfahren",
-            buttonLink: "/leistungen/esg",
+            buttonLink: "/leistungen/esg-transformation",
         },
     ];
 

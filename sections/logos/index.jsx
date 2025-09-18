@@ -37,16 +37,17 @@ const logos = [
     { src: logoBeyeScheid, alt: "BeyeScheid" },
 ];
 
-export default function LogoBar() {
+export default function LogoBar({ data }) {
+    console.log(data);
     return (
         <div className="py-6 lg:py-12 bg">
             <div className="container mx-auto px-6 md:px-12">
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-5 gap-6 items-center">
-                    {logos.map((logo, idx) => (
+                    {data?.map((logo, idx) => (
                         <div key={idx} className="flex items-center justify-center bg-white p-4  ">
                             <Image
-                                src={logo.src}
-                                alt={logo.alt}
+                                src={logo.url}
+                                alt={logo.idx}
                                 width={150}
                                 height={60}
                                 style={{ objectFit: "contain" }}

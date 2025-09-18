@@ -1,7 +1,7 @@
 // sections/ReferencesOverview.jsx
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -10,40 +10,29 @@ import { P, H2, H3 } from "@/typography";
 
 import { references } from "@/data/referenzen";
 
+import urlFor from "@/functions/urlFor";
+
 const categories = [
     { key: "all", label: "Alle Anzeigen" },
     { key: "beratung", label: "Technische Beratung" },
     { key: "projekt", label: "Bauprojektmanagement" },
-    { key: "esg", label: "ESG Transformation" },
-];
-
-// Beispiel-Daten (kommt später aus Props oder API)
-const sampleProjects = [
-    {
-        id: 1,
-        category: "projekt",
-        title: "Projekt: Bürokomplex Nordstern – München",
-        bullets: [
-            "Technische Gebäudeaufnahme",
-            "Bewertung brandschutztechnischer Anlagen",
-            "Übergabe in CAFM-System (inkl. SAP-Connect)",
-        ],
-        image: "/images/project-munich.jpg",
-        link: "/referenzen/1",
-    },
-    // … weitere Projekte
+    { key: "esg", label: "ESG-Transformation" },
 ];
 
 export default function ReferencesOverview({ projects }) {
-    const [filter, setFilter] = useState("all");
+    const [filter, setFilter] = useState("Alle Anzeigen");
 
     console.log(references);
 
+    useEffect(() => {
+        console.log(filter);
+    }, [filter]);
+
     // Gefilterte Liste
     const visible = useMemo(() => {
-        if (filter === "all") return references;
-        return references.filter((p) => p.category === filter);
-    }, [filter, references]);
+        if (filter === "Alle Anzeigen") return projects;
+        return projects.filter((p) => p.kategorie.title === filter);
+    }, [filter, projects]);
 
     return (
         <section className="py-16 lg:py-30 bg-gray-50 font-body">
@@ -60,11 +49,11 @@ export default function ReferencesOverview({ projects }) {
                 <div className="flex flex-wrap justify-center gap-4">
                     {categories.map((cat) => (
                         <button
-                            key={cat.key}
-                            onClick={() => setFilter(cat.key)}
+                            key={cat.label}
+                            onClick={() => setFilter(cat.label)}
                             className={clsx(
                                 "px-4 py-2 rounded-full font-medium transition",
-                                filter === cat.key
+                                filter === cat.label
                                     ? "bg-primaryColor-500 text-white"
                                     : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                             )}
@@ -93,23 +82,29 @@ export default function ReferencesOverview({ projects }) {
                             >
                                 {/* Bild */}
                                 <div className="relative w-full h-48">
-                                    <Image src={p.image} alt={p.title} fill style={{ objectFit: "cover" }} />
+                                    <Image
+                                        src={urlFor(p.heroImage).url()}
+                                        alt={p.title}
+                                        fill
+                                        style={{ objectFit: "cover" }}
+                                    />
                                     {/* Category Badge */}
                                     <span className="absolute top-3 left-3 bg-gray-800 bg-opacity-70 text-white text-xs px-2 py-1 rounded-lg">
-                                        {categories.find((c) => c.key === p.category)?.label}
+                                        {p.kategorie.title}
                                     </span>
                                 </div>
 
                                 {/* Text */}
                                 <div className="p-6 flex-1 flex flex-col">
                                     <h3 className="text-lg font-semibold mb-3">{p.title}</h3>
-                                    <ul className="flex-1 list-disc list-inside space-y-1 mb-4 text-sm text-gray-600">
+                                    {/* <ul className="flex-1 list-disc list-inside space-y-1 mb-4 text-sm text-gray-600">
                                         {p.bullets.map((b, i) => (
                                             <li key={i}>{b}</li>
                                         ))}
-                                    </ul>
+                                    </ul> */}
+                                    <P>{p.heroIntro}</P>
                                     <Link href={`/referenzen/${p.slug}`} passHref>
-                                        <div className="mt-auto inline-block text-primaryColor-500 font-medium hover:underline">
+                                        <div className="mt-auto lg:mt-8 inline-block text-primaryColor-500 font-medium hover:underline">
                                             Mehr erfahren →
                                         </div>
                                     </Link>

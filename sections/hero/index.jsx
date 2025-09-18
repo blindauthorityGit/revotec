@@ -5,6 +5,10 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { H1, P } from "@/typography";
 import { MainButton } from "@/components/buttons";
 
+import urlFor from "../../functions/urlFor";
+
+import { useGlobals } from "@/context/GlobalsContext";
+
 export default function Hero({
     bgColor = "#000000",
     gradientFrom = "rgba(0, 0, 0, 0.7)",
@@ -19,6 +23,13 @@ export default function Hero({
     email = "info@example.com",
 }) {
     const containerRef = useRef(null);
+
+    const globals = useGlobals() || {};
+    const contact = globals?.contactSettings?.contact;
+    const company = globals?.contactSettings?.company;
+    const social = globals?.contactSettings?.social;
+
+    console.log(contact, social, company);
 
     // 1) Track scroll _within_ the hero
     const { scrollYProgress } = useScroll({
@@ -60,7 +71,7 @@ export default function Hero({
             "
                 >
                     <Image
-                        src={imageSrc}
+                        src={urlFor(imageSrc).url()}
                         alt={imageAlt}
                         layout="fill"
                         objectFit="cover"
@@ -75,7 +86,7 @@ export default function Hero({
                 <motion.div style={{ y: textY }} className="col-span-12 lg:col-span-7 space-y-6 text-white z-20">
                     <H1 klasse="font-semibold mb-6 lg:mb-16">{headline} </H1>
                     <div className="flex flex-col-reverse lg:flex-row items-center gap-8">
-                        <MainButton aklass="w-full lg:w-auto" link={buttonLink}>
+                        <MainButton aklass="w-full lg:w-auto" link={"/leistungen"}>
                             {buttonText}
                         </MainButton>
                         <P klasse="!text-sm font-extralight">{subline}</P>
@@ -86,14 +97,14 @@ export default function Hero({
                             {/* <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M3 5a2 2 0 …" />
                             </svg> */}
-                            <span>{phone}</span>
+                            <span>{contact.phone}</span>
                         </div>
                         <div className="flex items-center space-x-2">
                             {/* mail icon + address */}
                             {/* <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M4 4h16a2 2 0 …" />
                             </svg> */}
-                            <span>{email}</span>
+                            <span>{contact.email}</span>
                         </div>
                     </div>
                 </motion.div>
@@ -110,7 +121,7 @@ export default function Hero({
             "
                     >
                         <Image
-                            src={imageSrc}
+                            src={urlFor(imageSrc).url()}
                             alt={imageAlt}
                             layout="fill"
                             objectFit="cover"

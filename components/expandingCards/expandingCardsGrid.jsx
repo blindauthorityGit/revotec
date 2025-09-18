@@ -17,6 +17,8 @@ export default function ExpandingCardGrid({ cards }) {
         return () => window.removeEventListener("resize", check);
     }, []);
 
+    console.log(cards);
+
     return (
         <LayoutGroup>
             <div className="flex flex-col lg:flex-row gap-4">
@@ -27,7 +29,6 @@ export default function ExpandingCardGrid({ cards }) {
                         isActive={activeIdx === i}
                         isDesktop={isDesktop}
                         onHoverStart={() => setActiveIdx(i)}
-                        // onHoverEnd={() => setActiveIdx(null)}
                     />
                 ))}
             </div>

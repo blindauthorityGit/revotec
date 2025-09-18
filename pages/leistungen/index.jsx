@@ -13,7 +13,16 @@ import Card2 from "@/assets/card2.png";
 import Card3 from "@/assets/card3.png";
 import HeroLeistungen from "@/assets/heroLeistungen2.png";
 
-export default function Leistungen() {
+// SANITY
+import client from "@/client";
+
+import { withStaticGlobals } from "@/lib/withGlobals";
+import { useGlobals } from "@/context/GlobalsContext";
+import { normalizePageWithHrefs } from "@/utils/normalizePage";
+
+export default function Leistungen({ dataReferenzen, dataLeistungen }) {
+    console.log(dataLeistungen);
+
     const services = [
         {
             title: "Technische Beratung",
@@ -126,12 +135,8 @@ export default function Leistungen() {
 
             {/* Subpage-Hero */}
             <SubPageHero
-                title={
-                    <>
-                        Unsere <span className="text-primaryColor-500">Leistungen</span>
-                    </>
-                }
-                subtitle="Für nachhaltige, effiziente und zukunftssichere Immobilienprojekte"
+                title={dataLeistungen.heroHeadline}
+                subtitle={dataLeistungen.heroIntro}
                 ctaText="Kontakt aufnehmen"
                 ctaLink="/kontakt"
                 bgImage={HeroLeistungen.src}
@@ -152,11 +157,42 @@ export default function Leistungen() {
                     reverse={i % 2 === 1}
                 />
             ))} */}
-            <ServiceHighlights services={services} />
+            <ServiceHighlights services={dataLeistungen.cards} />
             <CTASection />
-            <ReferencesSlider items={refs} />
+            <ReferencesSlider items={dataReferenzen} />
             <Logos></Logos>
             <ContactOverview gradientFrom="rgba(245,130,31,0.15)" gradientTo="transparent"></ContactOverview>
         </>
     );
 }
+
+export const getStaticProps = withStaticGlobals(async () => {
+    // 1) Rohdaten holen (alles)
+
+    const leistungen = await client.fetch(`*[_type == "servicesPage"][0]`);
+
+    const referenzen = await client.fetch(`*[_type == "referenz"] {
+      title,
+      "slug": slug.current,
+      heroTitle,
+      heroIntro,
+      heroImage{asset->{url}, alt},
+      contentTitle,
+      contentIntro,
+      contentText,
+      contentImages[]{asset->{url}, alt},
+      ergebnisText,
+      ergebnisImage{asset->{url}, alt},
+      datum,
+      ort,
+      auftraggeber,
+      kategorie->{title, "slug": slug.current},
+      seo
+    }`);
+
+    // 2) Einmalig normalisieren: hrefs bauen, interne Refs deref'en
+    const dataReferenzen = await normalizePageWithHrefs(referenzen, client);
+    const dataLeistungen = await normalizePageWithHrefs(leistungen, client);
+
+    return { props: { dataReferenzen, dataLeistungen }, revalidate: 10 };
+});

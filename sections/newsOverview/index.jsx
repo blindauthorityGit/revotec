@@ -49,9 +49,10 @@ const samplePosts = [
     },
 ];
 
-export default function NewsSection({ posts = samplePosts }) {
+export default function NewsSection({ posts = samplePosts, data }) {
+    console.log(data);
     // Nur die letzten vier Beiträge anzeigen
-    const latest = posts.slice(0, 4);
+    const latest = data.slice(0, 4);
     if (latest.length === 0) return null;
 
     return (
@@ -59,16 +60,21 @@ export default function NewsSection({ posts = samplePosts }) {
             <div className="container mx-auto px-6 md:px-12">
                 <H1 klasse="mb-12 ">Neues und Wissenswertes</H1>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {latest.map((post) => (
-                        <article key={post.id} className="flex flex-col bg-white rounded-lg overflow-hidden shadow-md">
+                    {latest.map((post, i) => (
+                        <article key={i} className="flex flex-col bg-white rounded-lg overflow-hidden shadow-md">
                             <div className="relative h-48 lg:h-64">
-                                <Image src={post.image} alt={post.title} fill style={{ objectFit: "cover" }} />
+                                <Image
+                                    src={post.image.asset.url}
+                                    alt={post.headline}
+                                    fill
+                                    style={{ objectFit: "cover" }}
+                                />
                             </div>
                             <div className="p-6 flex-1 flex flex-col">
-                                <H3 klasse="font-semibold mb-6">{post.title}</H3>
-                                <P className="mb-8">{post.excerpt}</P>
+                                <H3 klasse="font-semibold mb-6">{post.headline}</H3>
+                                <P className="mb-8">{post.subline}</P>
                                 <Link
-                                    href={post.href}
+                                    href={`/news/${post.slug.current}`}
                                     className="mt-auto  inline-flex items-center text-primaryColor-500 font-semibold"
                                 >
                                     <Play className="w-4 h-4 mr-2 " />
@@ -80,7 +86,7 @@ export default function NewsSection({ posts = samplePosts }) {
                 </div>
                 <div className="mt-12 text-center">
                     <Link
-                        href="/blog"
+                        href="/news"
                         className="bg-primaryColor-500 hover:bg-primaryColor-600 text-white font-semibold py-3 px-8 rounded-md"
                     >
                         mehr erfahren

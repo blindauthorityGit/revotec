@@ -80,8 +80,11 @@ export default function ServiceHighlights({ services = [] }) {
                                         ))}
                                     </ul>
 
-                                    <MainButton klasse="mt-auto w-full lg:w-full " link={svc.buttonLink}>
-                                        {svc.buttonText}
+                                    <MainButton
+                                        klasse="mt-auto w-full lg:w-full "
+                                        link={`leistungen/${svc.ctaLink.href}`}
+                                    >
+                                        {svc.ctaLabel}
                                     </MainButton>
                                 </motion.div>
                             </motion.div>

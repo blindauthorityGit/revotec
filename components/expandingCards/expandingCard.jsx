@@ -3,9 +3,10 @@ import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { P, H3 } from "@/typography";
+import urlFor from "../../functions/urlFor";
 
 export default function ExpandingCard({
-    data: { image, title, text, linkText, linkHref },
+    data: { image, title, excerpt, link, linkHref },
     isActive,
     isDesktop,
     onHoverStart,
@@ -18,14 +19,17 @@ export default function ExpandingCard({
         return (
             <div className="w-full mb-6">
                 <div className="relative w-full h-64  overflow-hidden">
-                    <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${image})` }} />
+                    <div
+                        className="absolute inset-0 bg-cover bg-center"
+                        style={{ backgroundImage: `url(${urlFor(image).url()})` }}
+                    />
                     <div className="absolute inset-0 bg-black/10" />
                     <div className="relative p-8 flex flex-col justify-end h-full text-white space-y-2">
                         <h3 className="font-headline uppercase text-2xl leading-tight mb-8">{title}</h3>
-                        <P className="text-sm leading-snug">{text}</P>
-                        {linkText && (
-                            <Link href={linkHref}>
-                                <span className="inline-block underline font-semibold">{linkText}</span>
+                        <P className="text-sm leading-snug">{excerpt}</P>
+                        {link && (
+                            <Link href={link.href}>
+                                <span className="inline-block underline font-semibold">{link.label}</span>
                             </Link>
                         )}
                     </div>
@@ -48,7 +52,7 @@ export default function ExpandingCard({
                 className={`absolute inset-0 bg-cover bg-center transition-filter duration-500 ${
                     isActive ? "filter-none" : "grayscale"
                 }`}
-                style={{ backgroundImage: `url(${image})` }}
+                style={{ backgroundImage: `url(${urlFor(image).url()})` }}
             />
             <div className="absolute inset-0 bg-black/40" />
 
@@ -86,10 +90,10 @@ export default function ExpandingCard({
                         transition={{ duration: 0.3 }}
                         className="space-y-4 pt-8 text-white"
                     >
-                        <P>{text}</P>
-                        {linkText && (
-                            <Link href={linkHref}>
-                                <span className="inline-block border-b-2 border-white font-semibold">{linkText}</span>
+                        <P>{excerpt}</P>
+                        {link && (
+                            <Link href={`/leistungen/${link.href}`}>
+                                <span className="inline-block border-b-2 border-white font-semibold">{link.label}</span>
                             </Link>
                         )}
                     </motion.div>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { H1, P } from "@/typography";
 import { MainButton } from "@/components/buttons";
 import useIsMobile from "@/hooks/isMobile";
+import { PT } from "@/components/text";
 
 const SPAN_CLASSES = {
     5: "md:col-span-5",
@@ -37,14 +38,19 @@ export default function TextImg({
                     className={clsx(
                         "col-span-12", // immer 12 auf klein
                         SPAN_CLASSES[leftSpan], // md:col-span-X
-                        "flex flex-col justify-center h-full space-y-6",
+                        "flex flex-col justify-center h-full space-y-6 lg:pr-24",
                         order && "lg:order-2"
                     )}
                 >
                     <H1 klasse={clsx("mb-8 lg:mb-12", order && "mt-8")}>{title}</H1>
                     {description && <P klasse="mb-12 lg:mb-16">{description}</P>}
 
-                    {intro && <div className="mb-6 text-base lg:text-lg leading-relaxed">{intro}</div>}
+                    {intro && (
+                        <div className="mb-6 text-base lg:text-lg leading-relaxed">
+                            {" "}
+                            <PT value={intro} className="prose max-w-none mb-6" />
+                        </div>
+                    )}
 
                     {bullets.length > 0 && (
                         <ul className="mb-8 list-disc list-inside font-semibold space-y-2 text-sm lg:text-base">

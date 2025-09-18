@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { H1, H3, P } from "@/typography";
 import { MainButton } from "@/components/buttons";
 
+import { PT, PTHeadline } from "@/components/text";
+
 export default function SubpageHero({
     title = "Seitenüberschrift",
     subtitle = "Kurzbeschreibung oder Untertitel für diese Unterseite.",
@@ -39,7 +41,9 @@ export default function SubpageHero({
             <div className="relative z-10 container mx-auto px-6 md:px-12 space-y-6">
                 {/* Title and animated underline */}
                 <div className="inline-block">
-                    <H1 klasse="font-bold leading-tight text-4xl md:text-5xl lg:text-6xl">{title}</H1>
+                    <H1 klasse="font-bold leading-tight text-4xl md:text-5xl lg:text-6xl">
+                        <PTHeadline value={title} />
+                    </H1>
                     <motion.div
                         className="mt-2 h-1 bg-primaryColor-500"
                         initial={{ width: 0 }}

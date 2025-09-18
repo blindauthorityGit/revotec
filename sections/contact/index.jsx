@@ -7,8 +7,9 @@ import { MainButton } from "@/components/buttons";
 import { Phone, Mail, Calendar, Upload } from "lucide-react";
 import clsx from "clsx";
 import { H1, H2, P } from "@/typography";
+import { PT } from "@/components/text";
 
-export default function ContactSection({ gradientFrom = "rgba(245,130,31,0.15)", gradientTo = "transparent" }) {
+export default function ContactSection({ data, gradientFrom = "rgba(245,130,31,0.15)", gradientTo = "transparent" }) {
     const [formState, setFormState] = useState({
         name: "",
         email: "",
@@ -21,27 +22,51 @@ export default function ContactSection({ gradientFrom = "rgba(245,130,31,0.15)",
     });
     const [status, setStatus] = useState("idle");
 
+    const ALLOWED_MIME = [
+        "application/pdf",
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/msword",
+    ];
+    const MAX_FILE_MB = 10;
+
+    const [errors, setErrors] = useState({});
+
+    const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v || "");
+
+    const validate = () => {
+        const e = {};
+        if (!formState.name.trim()) e.name = "Bitte Ihren Namen angeben.";
+        if (!isEmail(formState.email)) e.email = "Bitte eine gültige E-Mail angeben.";
+        if (formState.file) {
+            const f = formState.file;
+            if (!ALLOWED_MIME.includes(f.type)) e.file = "Unerlaubter Dateityp.";
+            if (f.size > MAX_FILE_MB * 1024 * 1024) e.file = `Datei größer als ${MAX_FILE_MB} MB.`;
+        }
+        setErrors(e);
+        return Object.keys(e).length === 0;
+    };
+
     const handleChange = (e) => {
         const { name, value, files } = e.target;
-        setFormState((fs) => ({
-            ...fs,
-            [name]: files ? files[0] : value,
-        }));
+        setFormState((fs) => ({ ...fs, [name]: files ? files[0] : value }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!validate()) return;
+
         setStatus("loading");
-        const data = new FormData();
-        Object.entries(formState).forEach(([k, v]) => {
-            if (v != null) data.append(k, v);
-        });
+        const fd = new FormData();
+        Object.entries(formState).forEach(([k, v]) => v != null && fd.append(k, v));
+
         try {
-            const res = await fetch("/api/contact", {
-                method: "POST",
-                body: data,
-            });
-            if (!res.ok) throw new Error();
+            const res = await fetch("/api/contact", { method: "POST", body: fd });
+            const json = await res.json();
+            if (!res.ok || !json.ok) throw new Error(json.error || "Send failed");
+
             setStatus("success");
             setFormState({
                 name: "",
@@ -53,8 +78,12 @@ export default function ContactSection({ gradientFrom = "rgba(245,130,31,0.15)",
                 message: "",
                 file: null,
             });
-        } catch {
+            setErrors({});
+        } catch (err) {
+            console.error(err);
             setStatus("error");
+        } finally {
+            setTimeout(() => setStatus("idle"), 6000); // UI zurücksetzen
         }
     };
 
@@ -76,7 +105,7 @@ export default function ContactSection({ gradientFrom = "rgba(245,130,31,0.15)",
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6 }}
                     >
-                        Wir beraten Sie gerne!
+                        {data.headline}
                     </motion.H1>
                     <motion.div
                         className="w-24 h-1 bg-primaryColor-500"
@@ -85,16 +114,14 @@ export default function ContactSection({ gradientFrom = "rgba(245,130,31,0.15)",
                         transition={{ duration: 0.5, delay: 0.3 }}
                         style={{ transformOrigin: "left center" }}
                     />
-                    <motion.p
+                    <motion.div
                         className="text-gray-300 leading-relaxed"
                         initial={{ opacity: 0 }}
                         whileInView={{ opacity: 1 }}
                         transition={{ duration: 0.6, delay: 0.4 }}
                     >
-                        Sie haben Fragen zu unseren Leistungen, möchten ein konkretes Projekt besprechen oder gleich
-                        einen Termin vereinbaren? Nutzen Sie gerne unser Kontaktformular, laden Sie relevante Unterlagen
-                        hoch, oder schlagen Sie direkt einen Termin vor. Wir melden uns umgehend zurück!
-                    </motion.p>
+                        <PT value={data.intro} className="prose max-w-none mb-6" />
+                    </motion.div>
 
                     <motion.div
                         className="space-y-4 lg:text-2xl mt-12"
@@ -104,11 +131,11 @@ export default function ContactSection({ gradientFrom = "rgba(245,130,31,0.15)",
                     >
                         <div className="flex items-center gap-3 text-white">
                             <Phone className="w-5 h-5 text-primaryColor-500" />
-                            <span>+49 5555 5555</span>
+                            <span>{data.phone}</span>
                         </div>
                         <div className="flex items-center gap-3 text-white">
                             <Mail className="w-5 h-5 text-primaryColor-500" />
-                            <span>info@revotec-gmbh.de</span>
+                            <span>{data.email}</span>
                         </div>
                     </motion.div>
                 </div>

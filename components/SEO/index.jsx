@@ -1,45 +1,56 @@
-// components/Meta.js
 import Head from "next/head";
+import { useRouter } from "next/router";
+import site from "@/lib/siteConfig"; // { siteName, siteUrl, defaultOgImage }
 
-// import urlFor from "../../functions/urlFor";
-import Logo from "../../assets/logo.svg";
+function robotsTag({ noindex, nofollow }) {
+    if (noindex && nofollow) return "noindex, nofollow";
+    if (noindex) return "noindex, follow";
+    if (nofollow) return "index, nofollow";
+    return "index, follow";
+}
 
-const Meta = ({ data }) => {
-    const fallbackDescription = "Kurse bei MainGlückskind - Wo kleine Herzen groß werden";
+export default function SEO({
+    seo = {}, // dein Sanity-SEO-Objekt
+    title, // Fallback Title
+    description, // Fallback Description
+    image, // Fallback OG image URL (string)
+    canonicalUrl, // Fallback Canonical (string)
+    siteName = site.siteName,
+}) {
+    const router = useRouter();
+    const urlFromRouter = `${site.siteUrl}${router.asPath?.split("#")[0] || ""}`;
+
+    const metaTitle = seo?.title || title || siteName;
+    const metaDesc = seo?.description || description || "";
+    const ogImage = seo?.ogImage?.asset?.url || image || site.defaultOgImage || "";
+
+    const canonical = seo?.canonicalUrl || canonicalUrl || urlFromRouter;
+    const robots = robotsTag({
+        noindex: !!seo?.noindex,
+        nofollow: !!seo?.nofollow,
+    });
 
     return (
         <Head>
-            <title>{data.mainSEO.title}</title>
-            <meta name="viewport" content="width=device-width, initial-scale=1" />
-            <meta charSet="utf-8" />
-            <meta
-                name="description"
-                content={data.mainSEO.description ? data.mainSEO.description : fallbackDescription}
-            />
-            {data.mainSEO.keywords ? (
-                <meta name="keywords" content={data.mainSEO.keywords.map((e) => e)} />
-            ) : (
-                <meta name="keywords" content="MainGlücksKind" />
-            )}
+            {/* Primary */}
+            <title>{metaTitle}</title>
+            {metaDesc && <meta name="description" content={metaDesc} />}
+            <meta name="robots" content={robots} />
+            {canonical && <link rel="canonical" href={canonical} />}
 
-            {/* Open Graph / Facebook */}
+            {/* Open Graph */}
             <meta property="og:type" content="website" />
-            {/* <meta property="og:url" content={url} /> */}
-            <meta property="og:title" content={data.mainSEO.title} />
-            <meta property="og:description" content={data.mainSEO.description} />
-            {/* Use ternary operator to check for ogImage existence */}
-            <meta
-                property="og:image"
-                content={data.advancedSEO.ogImage ? urlFor(data.advancedSEO.ogImage) : Logo.src}
-            />
+            <meta property="og:site_name" content={siteName} />
+            <meta property="og:title" content={metaTitle} />
+            {metaDesc && <meta property="og:description" content={metaDesc} />}
+            {canonical && <meta property="og:url" content={canonical} />}
+            {ogImage && <meta property="og:image" content={ogImage} />}
+
             {/* Twitter */}
-            <meta property="twitter:card" content="summary_large_image" />
-            {/* <meta property="twitter:url" content={url} /> */}
-            <meta property="twitter:title" content={data.mainSEO.title} />
-            <meta property="twitter:description" content={data.mainSEO.description} />
-            <meta property="twitter:image" content={data.advancedSEO.description} />
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:title" content={metaTitle} />
+            {metaDesc && <meta name="twitter:description" content={metaDesc} />}
+            {ogImage && <meta name="twitter:image" content={ogImage} />}
         </Head>
     );
-};
-
-export default Meta;
+}

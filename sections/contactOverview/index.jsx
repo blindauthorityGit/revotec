@@ -4,6 +4,9 @@ import { useRouter } from "next/router";
 import { H1, H2, P } from "@/typography";
 import { Phone, Mail, ChevronDown } from "lucide-react";
 
+import { useGlobals } from "@/context/GlobalsContext";
+import { PT } from "@/components/text";
+
 const services = [
     { value: "", label: "Generelle Anfrage" },
     { value: "beratung", label: "Technische Beratung" },
@@ -14,6 +17,11 @@ const services = [
 
 export default function ContactSection({ gradientFrom = "rgba(0, 0, 0, 0.7)", gradientTo = "transparent" }) {
     const router = useRouter();
+
+    const globals = useGlobals() || {};
+    const data = globals?.kontaktCta.headline;
+
+    console.log(data);
 
     const [form, setForm] = useState({
         name: "",
@@ -71,29 +79,16 @@ export default function ContactSection({ gradientFrom = "rgba(0, 0, 0, 0.7)", gr
         <section className="py-16 lg:py-30 bg-background-dark text-white relative font-body">
             <div className="container mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-24 items-start">
                 {/* Left info */}
-                <H1 klasse="lg:col-span-2">Wir beraten Sie gerne!</H1>
+                <H1 klasse="lg:col-span-2">{globals?.kontaktCta.headline}</H1>
                 <div className="space-y-6">
-                    <P klasse="font-bold">
-                        {" "}
-                        Sie stehen vor technischen oder organisatorischen Herausforderungen in Ihren Bau- oder
-                        Transformationsprojekten?{" "}
-                    </P>{" "}
-                    <P>
-                        Unser interdisziplinäres Team begleitet Sie von der ersten Analyse über die Planung bis zur
-                        erfolgreichen Umsetzung – stets mit Blick auf Nachhaltigkeit, Digitalisierung und
-                        Kosteneffizienz.{" "}
-                    </P>{" "}
-                    <P>
-                        Lassen Sie uns gemeinsam Ihre Anforderungen besprechen und maßgeschneiderte Lösungen entwickeln,
-                        die genau zu Ihrem Unternehmen passen.
-                    </P>
+                    <PT value={globals?.kontaktCta.text} className="prose max-w-none mb-6" />
                     <div className="flex items-center space-x-4 mt-16">
                         <Phone className="w-6 h-6" />
-                        <span>+49 555555555</span>
+                        <span>{globals?.kontaktCta.phone}</span>
                     </div>
                     <div className="flex items-center space-x-4 mb-12 lg:mb-0">
                         <Mail className="w-6 h-6" />
-                        <span>info@revotec-gmbh.de</span>
+                        <span>{globals?.kontaktCta.email}</span>
                     </div>{" "}
                 </div>
 
@@ -173,7 +168,7 @@ export default function ContactSection({ gradientFrom = "rgba(0, 0, 0, 0.7)", gr
                         >
                             {services.map((s) => (
                                 <option className="text-background-dark " key={s.value} value={s.value}>
-                                    <P> {s.label}</P>
+                                    {s.label}
                                 </option>
                             ))}
                         </select>

@@ -7,20 +7,61 @@ import SubPageHero from "@/sections/subPageHero";
 import { H2, H3, H4, P } from "@/typography";
 import { CTAButton } from "@/components/buttons";
 import CTASection from "@/sections/CTASection";
+import { PT } from "@/components/text";
+// SANITY
+
+import client from "@/client";
+import urlFor from "@/functions/urlFor";
+
+import { withStaticGlobals } from "@/lib/withGlobals";
+import { normalizePageWithHrefs } from "@/utils/normalizePage";
 
 export async function getStaticPaths() {
-    return {
-        paths: services.map((s) => ({ params: { slug: s.slug } })),
-        fallback: false,
-    };
+    const slugs = await client.fetch(`*[_type == "leistung" && defined(slug.current)]{ "slug": slug.current }
+`);
+    const paths = slugs.map((ref) => ({ params: { slug: ref.slug } }));
+
+    return { paths, fallback: false };
 }
 
-export async function getStaticProps({ params }) {
-    const service = services.find((s) => s.slug === params.slug);
+export const getStaticProps = withStaticGlobals(async ({ params }) => {
+    const serviceFetch = await client.fetch(
+        `*[_type == "leistung" && slug.current == $slug][0]{
+  title,
+  "slug": slug.current,
+  heroHeadline,
+  heroIntro,
+  heroImage{asset->{url}, alt},
+  contentIntro,
+  sections[]{
+    _key,
+    _type == "textImage" => {
+      headline, intro, body,
+      cta{
+        label,
+        "href": select(
+          defined(link.url) => link.url,
+          defined(link.internal) => "/" + link.internal->slug.current
+        )
+      },
+      image{asset->{url}, alt},
+      imageSide, background, paddingY
+    }
+  },
+  benefitsTitle,
+  benefits,
+  seo
+}`,
+        { slug: params.slug }
+    );
+
+    const service = await normalizePageWithHrefs(serviceFetch, client);
+
     return { props: { service } };
-}
+});
 
 export default function ServiceDetail({ service }) {
+    console.log(service);
     const router = useRouter();
     if (router.isFallback) return <p>Loading…</p>;
 
@@ -31,27 +72,31 @@ export default function ServiceDetail({ service }) {
                 <meta name="description" content={service.claim} />
             </Head>
 
-            <SubPageHero title={service.title} subtitle={service.claim} bgImage={service.heroImage} />
+            <SubPageHero
+                title={service.heroHeadline}
+                subtitle={service.heroIntro}
+                bgImage={service.heroImage.asset.url}
+            />
 
             {/* Intro */}
             <section className="py-16">
                 <div className="container mx-auto px-6 md:px-12">
-                    <P className="text-lg leading-relaxed whitespace-pre-wrap">{service.intro}</P>
+                    {/* <P className="text-lg leading-relaxed whitespace-pre-wrap">{service.intro}</P> */}
+                    <PT value={service.contentIntro} className="prose max-w-none mb-6" />
                 </div>
             </section>
 
             {/* Detaillierte Leistungen */}
             <section className="py-16 bg-gray-50">
                 <div className="container mx-auto px-6 md:px-12 space-y-12">
-                    {service.details.map((d, idx) => (
+                    {service.sections.map((d, idx) => (
                         <div key={idx} className="grid md:grid-cols-2 gap-8">
                             <div>
-                                <H3 klasse="text-2xl mb-4">{d.title}</H3>
-                                <P>{d.text}</P>
+                                <H3 klasse="text-2xl mb-4">{d.headline}</H3>
+                                <PT value={d.body} className="prose max-w-none mb-6" />
                             </div>
                             <div className="relative h-64 rounded-lg overflow-hidden shadow-md">
-                                {/* Optional: Bild-Platzhalter oder Icons */}
-                                <Image src={service.heroImage} alt={d.title} fill style={{ objectFit: "cover" }} />
+                                <Image src={d.image.asset.url} alt={d.title} fill style={{ objectFit: "cover" }} />
                             </div>
                         </div>
                     ))}

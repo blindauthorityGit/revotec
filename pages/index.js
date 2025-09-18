@@ -1,5 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
+import { useEffect } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import styles from "@/styles/Home.module.css";
 import dynamic from "next/dynamic";
@@ -21,6 +22,15 @@ import Card3 from "@/assets/card3.png";
 import Meta from "@/components/SEO";
 
 import Logo from "@/assets/logoLight.svg";
+
+// SANITY
+import client from "../client";
+
+import urlFor from "@/functions/urlFor";
+
+import { withStaticGlobals } from "@/lib/withGlobals";
+import { useGlobals } from "@/context/GlobalsContext";
+import { normalizePageWithHrefs } from "@/utils/normalizePage";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -118,7 +128,24 @@ const seoData = {
 
 console.log("Refs slider is", ReferencesSlider);
 
-export default function Home() {
+// useEffect(() => {
+//     console.log(dataStartPage);
+// }, []);
+
+export default function Home({ dataStartPage, dataReferenzen, logos, posts }) {
+    useEffect(() => {
+        console.log(dataStartPage, dataReferenzen, logos, posts);
+        console.log(dataStartPage.sections.filter((e) => e._type == "mainHero"));
+        console.log(sectionFiltered("mainHero"));
+    }, [dataStartPage]);
+
+    function sectionFiltered(type) {
+        return dataStartPage.sections.filter((e) => e._type == type)[0];
+    }
+
+    console.log(sectionFiltered("mainHero"));
+    console.log(sectionFiltered("servicesShowcase"));
+
     return (
         <>
             {/* SEO */}
@@ -128,39 +155,34 @@ export default function Home() {
                 // bgColor="#111827"
                 gradientFrom="rgba(245,130,31,0.15)"
                 gradientTo="transparent"
-                headline={
-                    <>
-                        Ihr Partner für technische Beratung und{" "}
-                        <span className="text-primaryColor-500"> Immobilien-Transformation</span>
-                    </>
-                }
-                subline="Vom Baubeginn über die ESG-Transformation bis zur Digitalisierung des FM-Gebäudebetriebs – wir begleiten Sie sicher durch jede Herausforderung."
-                buttonText="Mehr erfahren"
-                buttonLink="/leistungen"
-                imageSrc={HeroImg.src}
+                headline={sectionFiltered("mainHero").headline}
+                subline={sectionFiltered("mainHero").subline}
+                buttonText={sectionFiltered("mainHero")?.actions[0]?.label}
+                buttonLink={sectionFiltered("mainHero")?.actions[0]?.href}
+                imageSrc={sectionFiltered("mainHero").media}
                 imageAlt="Modernes Bürogebäude"
-                phone="+49 555555555"
+                phone="+49 5555ff55555"
                 email="info@revotec-gmbh.de"
             />
             <TextImg
                 bottomButton
-                buttonText="Alle Leistungen auf einen Blick"
-                buttonLink="./leistungen"
-                title="Leistungen"
-                description="Wir unterstützen mit fundierter technischer Expertise – von der Gebäudeaufnahme über die Integration in CAFM-Systeme bis hin zur Begleitung bei Brandschutz- und Sonderbaukontrollen."
+                buttonText={sectionFiltered("servicesShowcase").cta.label}
+                buttonLink={"/leistungen"}
+                title={sectionFiltered("servicesShowcase").title}
+                description={sectionFiltered("servicesShowcase").intro}
             >
-                <ExpandingCardsGrid cards={myCards}></ExpandingCardsGrid>
+                <ExpandingCardsGrid cards={sectionFiltered("servicesShowcase").cards}></ExpandingCardsGrid>
             </TextImg>
-            <ReferencesSlider items={refs} />
+            <ReferencesSlider items={dataReferenzen} />
             <TextImg
-                buttonText="Das Team entdecken"
-                title="Das Team hinter der Technik"
-                buttonLink="./team"
-                description="Unsere Stärke liegt in der Erfahrung – lernen Sie die Expert:innen kennen, die jedes Projekt mit Fachwissen, Weitblick und Engagement vorantreiben."
+                buttonText={sectionFiltered("textImage").cta.label}
+                title={sectionFiltered("textImage").headline}
+                buttonLink={sectionFiltered("textImage").cta.href}
+                description={sectionFiltered("textImage").intro}
                 bottomButton
             >
                 <Image
-                    src={Team}
+                    src={urlFor(sectionFiltered("textImage").image.asset).url()}
                     alt="Unser Team"
                     width={800}
                     height={500}
@@ -168,9 +190,58 @@ export default function Home() {
                     className=""
                 />
             </TextImg>
-            <Logos></Logos>
-            <NewsOverview></NewsOverview>
+            <Logos data={logos.logos}></Logos>
+            <NewsOverview data={posts}></NewsOverview>
             <ContactOverview gradientFrom="rgba(245,130,31,0.15)" gradientTo="transparent"></ContactOverview>
         </>
     );
 }
+
+export const getStaticProps = withStaticGlobals(async () => {
+    // 1) Rohdaten holen (alles)
+    const rawStartPage = await client.fetch(`*[_type == "startPage"][0]`);
+    const logos = await client.fetch(`*[_type == "logosSettings"][0]{
+  logos[]{
+    _key,
+    "url": asset->url,
+    alt
+  }
+}
+`);
+    const referenzen = await client.fetch(`*[_type == "referenz"] {
+      title,
+      "slug": slug.current,
+      heroTitle,
+      heroIntro,
+      heroImage{asset->{url}, alt},
+      contentTitle,
+      contentIntro,
+      contentText,
+      contentImages[]{asset->{url}, alt},
+      ergebnisText,
+      ergebnisImage{asset->{url}, alt},
+      datum,
+      ort,
+      auftraggeber,
+      kategorie->{title, "slug": slug.current},
+      seo
+    }`);
+
+    const postFetch = await client.fetch(
+        `  *[_type=="news"]{
+    headline, subline, date,
+    image{asset->{url, metadata{lqip}}, alt},
+    body,
+    seo,
+    slug
+  
+    }`
+    );
+
+    // 2) Einmalig normalisieren: hrefs bauen, interne Refs deref'en
+    const dataStartPage = await normalizePageWithHrefs(rawStartPage, client);
+    const dataReferenzen = await normalizePageWithHrefs(referenzen, client);
+    const posts = await normalizePageWithHrefs(postFetch, client);
+
+    return { props: { dataStartPage, dataReferenzen, logos, posts }, revalidate: 10 };
+});

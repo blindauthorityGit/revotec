@@ -2,12 +2,15 @@
 import "@/styles/globals.css";
 import Menu from "@/components/menu";
 import Footer from "@/sections/footer";
+import { GlobalsProvider } from "@/context/GlobalsContext";
 
 export default function App({ Component, pageProps }) {
     return (
         <>
             <Menu />
-            <Component {...pageProps} />
+            <GlobalsProvider value={pageProps.globals}>
+                <Component {...pageProps} />
+            </GlobalsProvider>
             <Footer />
         </>
     );

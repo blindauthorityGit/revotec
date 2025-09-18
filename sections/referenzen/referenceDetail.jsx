@@ -6,6 +6,8 @@ import Image from "next/image";
 import { P, H2, H1 } from "@/typography";
 import { MainButton } from "@/components/buttons";
 import Link from "next/link";
+import { PT } from "@/components/text";
+import urlFor from "@/functions/urlFor";
 
 export default function ReferenceDetail({ reference }) {
     return (
@@ -28,7 +30,7 @@ export default function ReferenceDetail({ reference }) {
                             : "ESG-Transformation"}
                     </div>
                     <H1 klasse="text-3xl lg:text-4xl font-bold">{reference.title}</H1>
-                    <P klasse="max-w-2xl mx-auto text-gray-700">{reference.intro}</P>
+                    <P klasse="max-w-2xl mx-auto text-gray-700">{reference.heroIntro}</P>
                 </div>
 
                 {/* Leistungen & Challenge */}
@@ -36,26 +38,21 @@ export default function ReferenceDetail({ reference }) {
                     {/* Text-Column */}
                     <div className="space-y-8">
                         {/* Leistungen */}
-                        <div className="space-y-4">
-                            <H2 klasse="text-2xl font-semibold">Unsere Leistungen</H2>
-                            <ul className="list-disc list-inside space-y-2 text-gray-700">
+                        <div className="space-y-4 ">
+                            {/* <H2 klasse="text-2xl font-semibold">Unsere Leistungen</H2> */}
+                            {/* <ul className="list-disc list-inside space-y-2 text-gray-700">
                                 {reference.bullets.map((b, i) => (
                                     <li key={i}>{b}</li>
                                 ))}
-                            </ul>
-                        </div>
-
-                        {/* Herausforderung & Lösung */}
-                        <div className="space-y-4">
-                            <H2 klasse="text-2xl font-semibold">Herausforderung & Lösung</H2>
-                            <P klasse="text-gray-700">{reference.challengeSolution}</P>
+                            </ul> */}
+                            <PT value={reference.contentText} className="prose max-w-none mb-6" />
                         </div>
                     </div>
 
                     {/* Main Image */}
                     <div className="rounded-2xl overflow-hidden shadow-lg">
                         <Image
-                            src={reference.image}
+                            src={urlFor(reference.heroImage).url()}
                             alt={reference.title}
                             width={800}
                             height={600}
@@ -65,13 +62,13 @@ export default function ReferenceDetail({ reference }) {
                 </div>
 
                 {/* Galerie */}
-                {reference.galleryImages?.length > 0 && (
+                {reference.contentImages?.length > 0 && (
                     <div className="space-y-6">
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {reference.galleryImages.map((src, i) => (
+                            {reference.contentImages.map((src, i) => (
                                 <div key={i} className="rounded-xl overflow-hidden shadow-md">
                                     <Image
-                                        src={src}
+                                        src={urlFor(src).url()}
                                         alt={`${reference.title} Bild ${i + 1}`}
                                         width={400}
                                         height={300}
@@ -87,13 +84,13 @@ export default function ReferenceDetail({ reference }) {
                 <section className="bg-gray-800 text-gray-100 rounded-2xl p-16">
                     <div className="grid lg:grid-cols-2 gap-8 items-center">
                         <div className="space-y-4">
-                            <H2 klasse="text-2xl font-semibold text-orange-400">Das Ergebnis</H2>
-                            <P klasse="text-gray-100">{reference.result}</P>
+                            {/* <H2 klasse="text-2xl font-semibold text-orange-400">Das Ergebnis</H2> */}
+                            <PT value={reference.ergebnisText} className="prose max-w-none mb-6" />
                         </div>
-                        {reference.resultImage && (
+                        {reference.ergebnisImage && (
                             <div className="rounded-xl overflow-hidden shadow-md">
                                 <Image
-                                    src={reference.resultImage}
+                                    src={urlFor(reference.ergebnisImage).url()}
                                     alt="Ergebnis"
                                     width={600}
                                     height={400}
@@ -108,15 +105,15 @@ export default function ReferenceDetail({ reference }) {
                 <div className="grid sm:grid-cols-3 gap-8 text-gray-600">
                     <div>
                         <span className="block font-semibold">Datum</span>
-                        <span>{reference.date}</span>
+                        <span>{reference.datum}</span>
                     </div>
                     <div>
                         <span className="block font-semibold">Ort</span>
-                        <span>{reference.location}</span>
+                        <span>{reference.ort}</span>
                     </div>
                     <div>
                         <span className="block font-semibold">Auftraggeber</span>
-                        <span>{reference.client}</span>
+                        <span>{reference.auftraggeber}</span>
                     </div>
                 </div>
 

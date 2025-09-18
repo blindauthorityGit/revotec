@@ -43,15 +43,15 @@ const teamData = [
     },
 ];
 
-export default function TeamSection() {
+export default function TeamSection({ data }) {
     return (
         <section className="py-16 lg:py-30 bg-background-light text-darkGrey">
             <div className="container mx-auto px-6 md:px-12">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
-                    {teamData.map((member, i) => (
+                    {data.map((member, i) => (
                         <TeamMember
                             key={i}
-                            imageSrc={member.imageSrc}
+                            imageSrc={member.image.asset.url}
                             name={member.name}
                             role={member.role}
                             bio={member.bio}

@@ -1,6 +1,6 @@
 import { PortableText } from "@portabletext/react";
 import Image from "next/image";
-import { urlFor } from "@/functions/urlFor";
+import urlFor from "@/functions/urlFor";
 import { H1, H2, H3, H4, H5, P } from "@/typography";
 
 // --- General rich text (articles/sections) ---
